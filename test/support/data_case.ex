@@ -16,6 +16,8 @@ defmodule Wabanex.DataCase do
 
   use ExUnit.CaseTemplate
 
+  alias Ecto.Adapters.SQL.Sandbox
+
   using do
     quote do
       alias Wabanex.Repo
@@ -28,10 +30,10 @@ defmodule Wabanex.DataCase do
   end
 
   setup tags do
-    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Wabanex.Repo)
+    :ok = Sandbox.checkout(Wabanex.Repo)
 
     unless tags[:async] do
-      Ecto.Adapters.SQL.Sandbox.mode(Wabanex.Repo, {:shared, self()})
+      Sandbox.mode(Wabanex.Repo, {:shared, self()})
     end
 
     :ok
