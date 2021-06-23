@@ -46,7 +46,8 @@ defmodule Wabanex.MixProject do
       {:credo, "~> 1.5", only: [:dev, :test], runtime: false},
       {:pbkdf2_elixir, "~> 1.4"},
       {:absinthe, "~> 1.5.0"},
-      {:absinthe_plug, "~> 1.5"}
+      {:absinthe_plug, "~> 1.5"},
+      {:crudry, "~> 2.4.0"}
     ]
   end
 
