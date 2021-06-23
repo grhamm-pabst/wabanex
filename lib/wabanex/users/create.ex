@@ -1,5 +1,5 @@
 defmodule Wabanex.Users.Create do
-  alias Wabanex.{Error, Repo, User}
+  alias Wabanex.{Repo, User}
 
   def call(params) do
     params
@@ -9,5 +9,5 @@ defmodule Wabanex.Users.Create do
   end
 
   defp handle_insert({:ok, %User{}} = result), do: result
-  defp handle_insert({:error, result}), do: {:error, Error.build(:bad_request, result)}
+  defp handle_insert({:error, result}), do: {:error, result}
 end
