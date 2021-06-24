@@ -18,7 +18,7 @@ defmodule Wabanex.User do
     field :password, :string, virtual: true
     field :password_hash, :string
 
-    has_one :training, Training
+    has_many :trainings, Training
 
     timestamps()
   end
