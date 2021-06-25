@@ -38,13 +38,13 @@ defmodule WabanexWeb.SchemaTest do
 
     test "when a invalid id is given, returns an error", %{conn: conn} do
       query = """
-      {
-        getUser(id: "97e6ddbb-caa4-4749-a18d-beae2c5e1833"){
-          id
-          name
-          email
+        {
+          getUser(id: "97e6ddbb-caa4-4749-a18d-beae2c5e1833"){
+            id
+            name
+            email
+          }
         }
-      }
       """
 
       response =
@@ -56,7 +56,7 @@ defmodule WabanexWeb.SchemaTest do
         "data" => %{"getUser" => nil},
         "errors" => [
           %{
-            "locations" => [%{"column" => 3, "line" => 2}],
+            "locations" => [%{"column" => 5, "line" => 2}],
             "message" => "User not found",
             "path" => ["getUser"]
           }
@@ -64,6 +64,83 @@ defmodule WabanexWeb.SchemaTest do
       }
 
       assert response == expected_response
+    end
+  end
+
+  describe "users mutations" do
+    test "when all params are valid, creates the user", %{conn: conn} do
+      mutation = """
+        mutation {
+          createUser(input: {
+            name: "Grhamm",
+            email: "grhammpabst123@gmail.com",
+            password: "123456"
+          }){
+            id
+            name
+            email
+          }
+        }
+      """
+
+      response =
+        conn
+        |> post("/api/graphql", %{query: mutation})
+        |> json_response(:ok)
+
+      assert %{
+               "data" => %{
+                 "createUser" => %{
+                   "email" => "grhammpabst123@gmail.com",
+                   "id" => _id,
+                   "name" => "Grhamm"
+                 }
+               }
+             } = response
+    end
+
+    test "when there are invalid params, returns an error", %{conn: conn} do
+      mutation = """
+        mutation {
+          createUser(input: {
+            name: "G",
+            email: "grhammpabst",
+            password: "12345"
+          }){
+            id
+            name
+            email
+          }
+        }
+      """
+
+      response =
+        conn
+        |> post("/api/graphql", %{query: mutation})
+        |> json_response(:ok)
+
+      expected_response = %{
+        "data" => %{"createUser" => nil},
+        "errors" => [
+          %{
+            "locations" => [%{"column" => 5, "line" => 2}],
+            "message" => "email has invalid format",
+            "path" => ["createUser"]
+          },
+          %{
+            "locations" => [%{"column" => 5, "line" => 2}],
+            "message" => "name should be at least 2 character(s)",
+            "path" => ["createUser"]
+          },
+          %{
+            "locations" => [%{"column" => 5, "line" => 2}],
+            "message" => "password should be at least 6 character(s)",
+            "path" => ["createUser"]
+          }
+        ]
+      }
+
+      assert expected_response == response
     end
   end
 end
